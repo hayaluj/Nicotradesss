@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/privacy-policy.html", "destination": "/privacy-policy.html" },
+    { "source": "/terms-of-service.html", "destination": "/terms-of-service.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/update-baseline",
+      "schedule": "0 8 * * 1-5"
+    }
+  ]
+}

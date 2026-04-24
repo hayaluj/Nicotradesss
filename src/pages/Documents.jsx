@@ -29,7 +29,6 @@ export default function Documents() {
 
   useEffect(() => {
     if (!user) return;
-    let cancelled = false;
     const run = async () => {
       setLoading(true);
       try {
@@ -38,20 +37,15 @@ export default function Documents() {
           .select('*')
           .eq('user_id', user.id)
           .order('purchased_at', { ascending: false });
-        if (!cancelled) {
           if (error) console.error('Error:', error);
           setDocuments(groupDocuments(data || []));
           setLoading(false);
-        }
       } catch (err) {
-        if (!cancelled) {
           console.error('Unexpected error:', err);
           setLoading(false);
         }
-      }
     };
     run();
-    return () => { cancelled = true; };
   }, [user]);
 
   if (!user && !loading) {

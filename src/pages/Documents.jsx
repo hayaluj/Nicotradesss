@@ -46,7 +46,7 @@ export default function Documents() {
         }
     };
     run();
-  }, [user]);
+  }, [user?.id]);
 
   if (!user && !loading) {
     return (

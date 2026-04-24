@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 
-// Group documents by document_key so languages appear together
 function groupDocuments(docs) {
   const groups = {};
   docs.forEach(doc => {
@@ -23,49 +22,47 @@ function groupDocuments(docs) {
 const LANG_LABELS = { en: '🇬🇧 English', no: '🇳🇴 Norwegian', es: '🇦🇷 Spanish' };
 
 export default function Documents() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState({});
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (!user) return;
+    // If user is null, wait — but set a timeout to stop loading after 5s
+    if (!user) {
+      const timeout = setTimeout(() => setLoading(false), 5000);
+      return () => clearTimeout(timeout);
+    }
+
+    // Prevent double-fetching
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     fetchDocuments();
   }, [user]);
 
   const fetchDocuments = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('purchase_documents')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('purchased_at', { ascending: false });
-
-    if (error) console.error('Error fetching documents:', error);
-    setDocuments(groupDocuments(data || []));
-    setLoading(false);
-  };
-
-  const handleDownload = async (doc, lang) => {
-    const key = `${doc.document_key}_${lang}`;
-    setDownloading(prev => ({ ...prev, [key]: true }));
     try {
-      const path = doc.languages[lang];
-      const { data, error } = await supabase.storage
-        .from('documents')
-        .createSignedUrl(path, 60 * 60); // 1 hour signed URL
+      const { data, error } = await supabase
+        .from('purchase_documents')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('purchased_at', { ascending: false });
 
-      if (error) throw error;
-      window.open(data.signedUrl, '_blank');
+      if (error) {
+        console.error('Error fetching documents:', error);
+      }
+      setDocuments(groupDocuments(data || []));
     } catch (err) {
-      console.error('Download error:', err);
-      alert('Could not generate download link. Please try again.');
+      console.error('Unexpected error:', err);
     } finally {
-      setDownloading(prev => ({ ...prev, [key]: false }));
+      setLoading(false);
     }
   };
 
-  if (!user) {
+  if (!user && !loading) {
     return (
       <div style={{ padding: '100px 24px', textAlign: 'center', fontFamily: 'DM Sans, sans-serif' }}>
         <h2>Please log in to view your documents.</h2>
@@ -102,7 +99,7 @@ export default function Documents() {
           <p style={{ color: '#6b6560', fontSize: '0.9rem', marginBottom: 20 }}>
             Purchase a guide to access it here in all three languages.
           </p>
-          <Link to="/courses" style={{
+          <Link to="/" style={{
             display: 'inline-block', padding: '10px 24px',
             background: '#0a6e55', color: '#fff', borderRadius: 8,
             textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem',
@@ -130,7 +127,6 @@ export default function Documents() {
                   </div>
                 </div>
               </div>
-
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {Object.keys(doc.languages).map(lang => {
                   const key = `${doc.document_key}_${lang}`;
@@ -162,4 +158,23 @@ export default function Documents() {
       )}
     </div>
   );
+
+  async function handleDownload(doc, lang) {
+    const key = `${doc.document_key}_${lang}`;
+    setDownloading(prev => ({ ...prev, [key]: true }));
+    try {
+      const path = doc.languages[lang];
+      const { data, error } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(path, 60 * 60);
+
+      if (error) throw error;
+      window.open(data.signedUrl, '_blank');
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Could not generate download link. Please try again.');
+    } finally {
+      setDownloading(prev => ({ ...prev, [key]: false }));
+    }
+  }
 }

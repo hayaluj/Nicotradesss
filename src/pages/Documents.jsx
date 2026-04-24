@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -26,41 +26,33 @@ export default function Documents() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState({});
-  const hasFetched = useRef(false);
 
   useEffect(() => {
-    // If user is null, wait — but set a timeout to stop loading after 5s
-    if (!user) {
-      const timeout = setTimeout(() => setLoading(false), 5000);
-      return () => clearTimeout(timeout);
-    }
-
-    // Prevent double-fetching
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
-    fetchDocuments(user.id);
-  }, [user]);
-
-  const fetchDocuments = async (userId) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('purchase_documents')
-        .select('*')
-        .eq('user_id', userId)
-        .order('purchased_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching documents:', error);
+    if (!user) return;
+    let cancelled = false;
+    const run = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('purchase_documents')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('purchased_at', { ascending: false });
+        if (!cancelled) {
+          if (error) console.error('Error:', error);
+          setDocuments(groupDocuments(data || []));
+          setLoading(false);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error('Unexpected error:', err);
+          setLoading(false);
+        }
       }
-      setDocuments(groupDocuments(data || []));
-    } catch (err) {
-      console.error('Unexpected error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [user]);
 
   if (!user && !loading) {
     return (

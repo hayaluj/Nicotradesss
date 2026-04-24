@@ -4,6 +4,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import '@/styles/marketing.css';
 
+const SOCIAL_LINKS = {
+  tiktok:    'https://www.tiktok.com/@nicotradesss',
+  snapchat:  'https://snapchat.com/t/Dpu9bM07',
+  instagram: 'https://www.instagram.com/nicochilling_',
+  telegram:  'https://t.me/nicotradesss',
+};
+
 const t = {
   EN: {
     about: 'About', trading: 'Trading', community: 'Community', bookSession: 'Book a Session',
@@ -33,15 +40,21 @@ const t = {
     sessionTitle: 'Personal Trading Session',
     sessionDesc: '60 minutes, one on one. We review your trades, fix your strategy, and build a personalised plan. Limited spots.',
     badgePremium: 'PREMIUM', bookSession: 'Book a Session →',
+    botPdfTitle: 'How to Build a Trading Bot',
+    botPdfDesc: 'Automate your strategy with zero coding. From idea to live bot in an afternoon.',
+    botPdfBtn: 'Get the Guide →',
+    badgeGuide: 'GUIDE',
+    beginnerPdfTitle: "Beginner's Complete Trading Guide",
+    beginnerPdfDesc: 'Everything I wish I knew when I started. The complete foundation for new traders.',
+    beginnerPdfBtn: 'Get the Guide →',
     emailH2: 'Get the free Forex Starter Kit.',
     emailSub: 'The fundamentals, the mistakes, the shortcuts — in one free download. No spam, ever.',
     emailPlaceholder: 'your@email.com', sendKit: 'Send me the kit →',
     checkInbox: 'Check your inbox! 🎉', emailError: 'Something went wrong. Please try again.',
     disclaimer: 'All content on this site is for educational purposes only and does not constitute financial advice. Trading involves significant risk of loss. Past results are not indicative of future performance.',
     copyright: '© 2025 Nicotradesss. All rights reserved.',
-    goDashboard: 'Go to Dashboard →',
-    login: 'Log In',
-    register: 'Get Started →',
+    goDashboard: 'Go to Dashboard →', login: 'Log In', register: 'Get Started →',
+    followOn: 'Follow on',
   },
   NO: {
     about: 'Om', trading: 'Handel', community: 'Fellesskap', bookSession: 'Bestill en time',
@@ -71,15 +84,21 @@ const t = {
     sessionTitle: 'Personlig handelsøkt',
     sessionDesc: '60 minutter, en-til-en. Vi går gjennom dine handler, justerer strategien din og utarbeider en personlig plan. Begrenset antall plasser.',
     badgePremium: 'PREMIUM', bookSession: 'Bestill en time →',
+    botPdfTitle: 'Slik bygger du en handelsbot',
+    botPdfDesc: 'Automatiser strategien din uten å skrive en linje kode. Fra idé til live bot på en ettermiddag.',
+    botPdfBtn: 'Hent guiden →',
+    badgeGuide: 'GUIDE',
+    beginnerPdfTitle: 'Komplett handelsguide for nybegynnere',
+    beginnerPdfDesc: 'Alt jeg skulle ønske jeg visste da jeg startet. Det komplette grunnlaget for nye tradere.',
+    beginnerPdfBtn: 'Hent guiden →',
     emailH2: 'Få den gratis Forex-startpakken.',
     emailSub: 'Grunnleggende kunnskap, vanlige feil, smarte tips – alt i én gratis nedlasting. Ingen spam, noensinne.',
     emailPlaceholder: 'din@epost.no', sendKit: 'Send meg settet →',
     checkInbox: 'Sjekk innboksen din! 🎉', emailError: 'Det oppstod en feil. Prøv på nytt.',
     disclaimer: 'Alt innhold på dette nettstedet er kun ment for informasjonsformål og utgjør ikke finansiell rådgivning. Handel innebærer en betydelig risiko for tap. Tidligere resultater er ikke en garanti for fremtidig avkastning.',
     copyright: '© 2025 Nicotradesss. Alle rettigheter forbeholdt.',
-    goDashboard: 'Gå til oversikten →',
-    login: 'Logg inn',
-    register: 'Kom i gang →',
+    goDashboard: 'Gå til oversikten →', login: 'Logg inn', register: 'Kom i gang →',
+    followOn: 'Følg på',
   },
   ES: {
     about: 'Acerca de', trading: 'Operaciones', community: 'Comunidad', bookSession: 'Reserva una sesión',
@@ -109,15 +128,21 @@ const t = {
     sessionTitle: 'Sesión de trading personal',
     sessionDesc: '60 minutos, en sesión individual. Analizamos tus operaciones, ajustamos tu estrategia y elaboramos un plan personalizado. Plazas limitadas.',
     badgePremium: 'PREMIUM', bookSession: 'Reserva una sesión →',
+    botPdfTitle: 'Cómo construir un bot de trading',
+    botPdfDesc: 'Automatiza tu estrategia sin escribir una línea de código. De la idea al bot en funcionamiento en una tarde.',
+    botPdfBtn: 'Obtener la guía →',
+    badgeGuide: 'GUÍA',
+    beginnerPdfTitle: 'Guía completa de trading para principiantes',
+    beginnerPdfDesc: 'Todo lo que desearía haber sabido cuando empecé. La base completa para nuevos traders.',
+    beginnerPdfBtn: 'Obtener la guía →',
     emailH2: 'Consigue el kit de inicio gratuito de Forex.',
     emailSub: 'Los conceptos básicos, los errores, los atajos: todo en una sola descarga gratuita. Sin spam, nunca.',
     emailPlaceholder: 'tu@email.com', sendKit: 'Envíame el kit →',
     checkInbox: '¡Echa un vistazo a tu bandeja de entrada! 🎉', emailError: 'Ha ocurrido un error. Inténtalo de nuevo.',
     disclaimer: 'Todo el contenido de este sitio web tiene fines exclusivamente educativos y no constituye asesoramiento financiero. Las operaciones bursátiles conllevan un riesgo significativo de pérdidas. Los resultados pasados no son indicativos del rendimiento futuro.',
     copyright: '© 2025 Nicotradesss. Todos los derechos reservados.',
-    goDashboard: 'Ve al panel de control →',
-    login: 'Iniciar sesión',
-    register: 'Comenzar →',
+    goDashboard: 'Ve al panel de control →', login: 'Iniciar sesión', register: 'Comenzar →',
+    followOn: 'Seguir en',
   },
 };
 
@@ -158,11 +183,7 @@ export default function Home() {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          product,
-          userId: user?.id || '',
-          email: user?.email || '',
-        }),
+        body: JSON.stringify({ product, userId: user?.id || '', email: user?.email || '' }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
@@ -176,17 +197,12 @@ export default function Home() {
     setEmailError('');
     try {
       await supabase.from('email_subscribers').insert({
-        email,
-        language: lang.toLowerCase(),
-        source: 'homepage',
-        subscribed_at: new Date().toISOString(),
-        status: 'active',
+        email, language: lang.toLowerCase(), source: 'homepage',
+        subscribed_at: new Date().toISOString(), status: 'active',
       });
       setEmailSubmitted(true);
     } catch (err) {
-      if (err?.code === '23505' || err?.message?.includes('duplicate')) {
-        setEmailSubmitted(true); return;
-      }
+      if (err?.code === '23505' || err?.message?.includes('duplicate')) { setEmailSubmitted(true); return; }
       setEmailError(s.emailError);
     }
   };
@@ -200,7 +216,7 @@ export default function Home() {
           <ul className={`nav-links${menuOpen ? ' open' : ''}`}>
             <li><a onClick={() => { scrollTo('story'); setMenuOpen(false); }} style={{ cursor: 'pointer' }}>{s.about}</a></li>
             <li><a onClick={() => { scrollTo('products'); setMenuOpen(false); }} style={{ cursor: 'pointer' }}>{s.trading}</a></li>
-            <li><a href="#" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>{s.community}</a></li>
+            <li><a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>{s.community}</a></li>
             <li><Link to="/booking" onClick={() => setMenuOpen(false)}>{s.bookSession}</Link></li>
             {!user && <li className="nav-mobile-only"><Link to="/login" onClick={() => setMenuOpen(false)}>{s.login}</Link></li>}
             {!user && <li className="nav-mobile-only"><Link to="/register" onClick={() => setMenuOpen(false)}>{s.register}</Link></li>}
@@ -231,9 +247,7 @@ export default function Home() {
         <div className="container">
           <div className="hero-content">
             <h1 className="fade-in fade-in-d1">
-              {s.h1a}<br />
-              {s.h1b}<br />
-              {s.h1c} <span className="text-accent">{s.h1money}</span> {s.h1d}
+              {s.h1a}<br />{s.h1b}<br />{s.h1c} <span className="text-accent">{s.h1money}</span> {s.h1d}
             </h1>
             <p className="hero-sub fade-in fade-in-d2">{s.heroSub}</p>
             <div className="hero-buttons fade-in fade-in-d3">
@@ -245,10 +259,10 @@ export default function Home() {
               <Link to="/calculator" className="mk-btn mk-btn-ghost">{s.freeKit}</Link>
             </div>
             <div className="hero-chips fade-in fade-in-d3">
-              <span className="chip">17K TikTok</span>
-              <span className="chip">20K Snapchat</span>
-              <span className="chip">3K Instagram</span>
-              <span className="chip">Telegram</span>
+              <a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer" className="chip chip-link">2K TikTok</a>
+              <a href={SOCIAL_LINKS.snapchat} target="_blank" rel="noopener noreferrer" className="chip chip-link">158K Snapchat</a>
+              <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="chip chip-link">5K Instagram</a>
+              <a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" className="chip chip-link">Telegram</a>
             </div>
           </div>
           <div className="hero-photo-col fade-in fade-in-d2">
@@ -265,10 +279,34 @@ export default function Home() {
       <section className="social-proof-bar">
         <div className="container">
           <div className="stats-grid">
-            <div className="stat-item fade-in"><span className="stat-number">17,000+</span><span className="stat-label">{s.tiktokFollowers}</span></div>
-            <div className="stat-item fade-in fade-in-d1"><span className="stat-number">20,000+</span><span className="stat-label">{s.snapFollowers}</span></div>
-            <div className="stat-item fade-in fade-in-d2"><span className="stat-number">500+</span><span className="stat-label">{s.students}</span></div>
-            <div className="stat-item fade-in fade-in-d3"><span className="stat-number">3</span><span className="stat-label">{s.languages}</span></div>
+            <div className="stat-item fade-in">
+              <a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer" className="stat-link">
+                <span className="stat-number">2,000+</span>
+                <span className="stat-label">{s.tiktokFollowers}</span>
+                <span className="stat-follow">{s.followOn} TikTok →</span>
+              </a>
+            </div>
+            <div className="stat-item fade-in fade-in-d1">
+              <a href={SOCIAL_LINKS.snapchat} target="_blank" rel="noopener noreferrer" className="stat-link">
+                <span className="stat-number">158,000+</span>
+                <span className="stat-label">{s.snapFollowers}</span>
+                <span className="stat-follow">{s.followOn} Snapchat →</span>
+              </a>
+            </div>
+            <div className="stat-item fade-in fade-in-d2">
+              <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="stat-link">
+                <span className="stat-number">5,000+</span>
+                <span className="stat-label">Instagram</span>
+                <span className="stat-follow">{s.followOn} Instagram →</span>
+              </a>
+            </div>
+            <div className="stat-item fade-in fade-in-d3">
+              <a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" className="stat-link">
+                <span className="stat-number">Telegram</span>
+                <span className="stat-label">{s.community}</span>
+                <span className="stat-follow">{s.followOn} Telegram →</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -323,6 +361,20 @@ export default function Home() {
               <div className="product-price">€29/month</div>
               <button className="mk-btn mk-btn-primary" onClick={() => handleCheckout('vip')}>{s.joinCommunity}</button>
             </div>
+            <div className="product-card fade-in fade-in-d1">
+              <span className="product-badge badge-guide">{s.badgeGuide}</span>
+              <h3>{s.beginnerPdfTitle}</h3>
+              <p>{s.beginnerPdfDesc}</p>
+              <div className="product-price">€29</div>
+              <button className="mk-btn mk-btn-primary" onClick={() => handleCheckout('beginner_pdf')}>{s.beginnerPdfBtn}</button>
+            </div>
+            <div className="product-card fade-in fade-in-d2">
+              <span className="product-badge badge-guide">{s.badgeGuide}</span>
+              <h3>{s.botPdfTitle}</h3>
+              <p>{s.botPdfDesc}</p>
+              <div className="product-price">€14.99</div>
+              <button className="mk-btn mk-btn-primary" onClick={() => handleCheckout('bot_pdf')}>{s.botPdfBtn}</button>
+            </div>
             <div className="product-card muted-card fade-in fade-in-d3">
               <span className="product-badge badge-soon">{s.badgeSoon}</span>
               <h3>{s.advTitle}</h3>
@@ -348,12 +400,7 @@ export default function Home() {
           <div className="video-grid fade-in fade-in-d2">
             {['/videos/nico-1.mp4', '/videos/nico-2.mp4', '/videos/nico-3.mp4'].map((src, i) => (
               <div className="video-card" key={i}>
-                <video
-                  src={src}
-                  playsInline
-                  muted
-                  loop
-                  preload="metadata"
+                <video src={src} playsInline muted loop preload="metadata"
                   onMouseEnter={(e) => e.target.play()}
                   onMouseLeave={(e) => { e.target.pause(); e.target.currentTime = 0; }}
                   onClick={(e) => e.target.paused ? e.target.play() : e.target.pause()}
@@ -394,8 +441,11 @@ export default function Home() {
             <ul className="footer-nav">
               <li><a onClick={() => scrollTo('story')} style={{ cursor: 'pointer' }}>{s.about}</a></li>
               <li><a onClick={() => scrollTo('products')} style={{ cursor: 'pointer' }}>{s.trading}</a></li>
-              <li><a href="#" target="_blank" rel="noopener noreferrer">{s.community}</a></li>
+              <li><a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer">{s.community}</a></li>
               <li><Link to="/booking">{s.bookSession}</Link></li>
+              <li><a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a></li>
+              <li><a href={SOCIAL_LINKS.snapchat} target="_blank" rel="noopener noreferrer">Snapchat</a></li>
+              <li><a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
               <li><a href="/privacy-policy.html">Privacy Policy</a></li>
               <li><a href="/terms-of-service.html">Terms of Service</a></li>
             </ul>

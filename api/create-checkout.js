@@ -1,15 +1,26 @@
 const PRICES = {
-  course: 'price_1TH2G3GmYFXIEfvk4XmrWMGV',       // €99 one-time
-  vip: 'price_1TH2GMGmYFXIEfvkdBvNE2a4',            // €29/month
-  session: 'price_1TH2GhGmYFXIEfvkuHo7ZAdC',        // €199 one-time
-  templates: 'price_1TH2H3GmYFXIEfvk9PD28dII',      // €19 one-time
+  course:        'price_1TH2G3GmYFXIEfvk4XmrWMGV',  // €99 one-time
+  vip:           'price_1TH2GMGmYFXIEfvkdBvNE2a4',   // €29/month
+  session:       'price_1TH2GhGmYFXIEfvkuHo7ZAdC',   // €199 one-time
+  templates:     'price_1TH2H3GmYFXIEfvk9PD28dII',   // €19 one-time
+  beginner_pdf:  'price_1TPm2xGmYFXIEfvkBq43BpwV',   // €29 one-time
+  bot_pdf:       'price_1TPm4aGmYFXIEfvk0wWjYZz6',   // €14.99 one-time
 };
 
 const MODES = {
-  course: 'payment',
-  vip: 'subscription',
-  session: 'payment',
-  templates: 'payment',
+  course:       'payment',
+  vip:          'subscription',
+  session:      'payment',
+  templates:    'payment',
+  beginner_pdf: 'payment',
+  bot_pdf:      'payment',
+};
+
+const DOCUMENT_ACCESS = {
+  beginner_pdf: 'beginner_pdf',
+  bot_pdf:      'bot_pdf',
+  templates:    'templates',
+  course:       null,
 };
 
 export default async function handler(req, res) {
@@ -21,7 +32,9 @@ export default async function handler(req, res) {
     const { product, userId, email, successUrl, cancelUrl } = req.body;
 
     if (!product || !PRICES[product]) {
-      return res.status(400).json({ error: 'Invalid product. Use: course, vip, session, or templates' });
+      return res.status(400).json({
+        error: 'Invalid product. Use: course, vip, session, templates, beginner_pdf, bot_pdf'
+      });
     }
 
     const origin = req.headers.origin || 'https://nicotradesss.com';
@@ -35,6 +48,7 @@ export default async function handler(req, res) {
     params.append('metadata[product]', product);
     params.append('metadata[userId]', userId || '');
     params.append('metadata[tier]', product === 'vip' ? 'vip' : product === 'course' ? 'course' : '');
+    params.append('metadata[document_key]', DOCUMENT_ACCESS[product] || '');
 
     if (email) {
       params.append('customer_email', email);

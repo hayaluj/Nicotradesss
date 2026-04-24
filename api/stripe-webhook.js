@@ -19,6 +19,34 @@ async function buffer(readable) {
   return Buffer.concat(chunks);
 }
 
+// PDF document definitions — storage paths in Supabase
+const PDF_DOCUMENTS = {
+  beginner_pdf: {
+    title: 'Beginner\'s Trading Guide',
+    files: {
+      en: 'pdfs/beginner-guide-en.pdf',
+      no: 'pdfs/beginner-guide-no.pdf',
+      es: 'pdfs/beginner-guide-es.pdf',
+    },
+  },
+  bot_pdf: {
+    title: 'Trading Bot Guide',
+    files: {
+      en: 'pdfs/bot-guide-en.pdf',
+      no: 'pdfs/bot-guide-no.pdf',
+      es: 'pdfs/bot-guide-es.pdf',
+    },
+  },
+  templates: {
+    title: 'Trading Templates Pack',
+    files: {
+      en: 'pdfs/templates-en.pdf',
+      no: 'pdfs/templates-no.pdf',
+      es: 'pdfs/templates-es.pdf',
+    },
+  },
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -39,28 +67,57 @@ export default async function handler(req, res) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
-        const { product, userId, tier } = session.metadata || {};
+        const { product, userId, tier, document_key } = session.metadata || {};
         const email = session.customer_email || session.customer_details?.email;
 
         console.log(`Checkout completed: product=${product}, email=${email}, tier=${tier}, userId=${userId}`);
 
-        // Update user tier if we have enough info
+        // 1. Update user tier if applicable
         if (tier && (userId || email)) {
           if (userId) {
-            await supabase
-              .from('profiles')
-              .update({ tier })
-              .eq('id', userId);
+            await supabase.from('profiles').update({ tier }).eq('id', userId);
           } else if (email) {
-            await supabase
-              .from('profiles')
-              .update({ tier })
-              .eq('email', email);
+            await supabase.from('profiles').update({ tier }).eq('email', email);
           }
           console.log(`Updated tier to ${tier} for ${userId || email}`);
         }
 
-        // Store the payment record
+        // 2. Grant document access if this is a PDF/document purchase
+        if (document_key && PDF_DOCUMENTS[document_key]) {
+          const doc = PDF_DOCUMENTS[document_key];
+
+          // Find user ID if we only have email
+          let resolvedUserId = userId;
+          if (!resolvedUserId && email) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('email', email)
+              .single();
+            resolvedUserId = profile?.id;
+          }
+
+          if (resolvedUserId) {
+            // Insert one purchase_documents row per language
+            const insertRows = Object.entries(doc.files).map(([lang, path]) => ({
+              user_id: resolvedUserId,
+              document_key,
+              language: lang,
+              title: doc.title,
+              storage_path: path,
+              purchased_at: new Date().toISOString(),
+            }));
+
+            const { error: docError } = await supabase
+              .from('purchase_documents')
+              .upsert(insertRows, { onConflict: 'user_id,document_key,language' });
+
+            if (docError) console.error('Document insert error:', docError);
+            else console.log(`Granted ${document_key} access to ${resolvedUserId}`);
+          }
+        }
+
+        // 3. Store payment record
         await supabase.from('payments').insert({
           stripe_session_id: session.id,
           stripe_customer_id: session.customer,
@@ -79,7 +136,6 @@ export default async function handler(req, res) {
       }
 
       case 'customer.subscription.deleted': {
-        // Downgrade VIP users when subscription cancelled
         const subscription = event.data.object;
         const customer = await stripe.customers.retrieve(subscription.customer);
         const email = customer.email;

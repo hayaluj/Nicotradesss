@@ -1441,3 +1441,29 @@
     display: list-item;
   }
 }
+.chip-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.15s;
+}
+.chip-link:hover { opacity: 0.75; }
+
+.stat-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-follow {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  opacity: 0.6;
+}
+.stat-link:hover .stat-follow { opacity: 1; }
+
+.badge-guide {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+}

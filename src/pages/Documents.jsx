@@ -39,16 +39,16 @@ export default function Documents() {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
-    fetchDocuments();
+    fetchDocuments(user.id);
   }, [user]);
 
-  const fetchDocuments = async () => {
+  const fetchDocuments = async (userId) => {
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('purchase_documents')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .order('purchased_at', { ascending: false });
 
       if (error) {

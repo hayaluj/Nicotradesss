@@ -6,7 +6,7 @@ import '@/styles/marketing.css';
 
 const SOCIAL_LINKS = {
   tiktok:    'https://www.tiktok.com/@nicotradesss',
-  snapchat:  'https://snapchat.com/t/Dpu9bM07',
+  snapchat:  'https://snapchat.com/t/zMujbsoL',
   instagram: 'https://www.instagram.com/nicochilling_',
   telegram:  'https://t.me/nicotradesss',
 };

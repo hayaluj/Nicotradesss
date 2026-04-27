@@ -173,11 +173,12 @@ export default function Admin() {
         .select('id, email, full_name, tier')
         .eq('email', userEmail.trim().toLowerCase())
         .maybeSingle();
-      if (error || !data) {
-        setMsg('Error: User not found');
-      } else {
-        setFoundUser(data);
-      }
+        console.log('Search result:', data, error);
+        if (!data) {
+          setMsg('Error: User not found — check console');
+        } else {
+          setFoundUser(data);
+        }
     } catch (err) { setMsg('Error: ' + err.message); }
     finally { setUserSearching(false); }
   };

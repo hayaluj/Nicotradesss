@@ -151,7 +151,7 @@ export default function Documents() {
     try {
       const path = doc.languages[lang];
       const { data, error } = await supabase.storage
-        .from('documents')
+        .from('Documents')
         .createSignedUrl(path, 60 * 60);
 
       if (error) throw error;

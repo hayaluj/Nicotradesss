@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     const storagePath = `custom/${userId}/${documentKey}-${language}-${Date.now()}.${ext}`;
 
     const { error: uploadError } = await supabaseAdmin.storage
-      .from('documents')
+      .from('Documents')
       .upload(storagePath, fileBuffer, {
         upsert: true,
         contentType: 'application/octet-stream',

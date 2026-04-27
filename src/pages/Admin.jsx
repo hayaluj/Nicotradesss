@@ -172,7 +172,7 @@ export default function Admin() {
         .from('profiles')
         .select('id, email, full_name, tier')
         .eq('email', userEmail.trim().toLowerCase())
-        .single();
+        .maybeSingle();
       if (error || !data) {
         setMsg('Error: User not found');
       } else {

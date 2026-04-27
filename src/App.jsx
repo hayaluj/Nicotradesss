@@ -35,7 +35,6 @@ function AppRoutes() {
       <Route path="/legal" element={<Legal />} />
       <Route path="/privacy-policy" element={<Legal initialTab="privacy" />} />
       <Route path="/terms-of-service" element={<Legal initialTab="terms" />} />
-      <Route path="/admin" element={<Admin />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Protected routes with Layout */}
@@ -53,6 +52,7 @@ function AppRoutes() {
         <Route path="/documents" element={<Documents />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
       </Route>
 
       {/* Catch-all */}

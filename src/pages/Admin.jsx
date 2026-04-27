@@ -188,45 +188,43 @@ export default function Admin() {
       setUserSearching(false);
     }
   };
-  
+
   const uploadDocument = async () => {
-    if (!foundUser) { setMsg('Error: Find a user first'); return; }
-    if (!docFile) { setMsg('Error: Select a file first'); return; }
-    if (!docTitle.trim()) { setMsg('Error: Enter a document title'); return; }
+  if (!foundUser) { setMsg('Error: Find a user first'); return; }
+  if (!docFile) { setMsg('Error: Select a file first'); return; }
+  if (!docTitle.trim()) { setMsg('Error: Enter a document title'); return; }
+  if (!docKey.trim()) { setMsg('Error: Enter a document key'); return; }
 
-    setUploading(true);
-    try {
-      // Upload file to Supabase Storage
-      const ext = docFile.name.split('.').pop();
-      const fileName = `custom/${foundUser.id}/${docKey}-${docLang}-${Date.now()}.${ext}`;
+  setUploading(true);
+  try {
+    const formData = new FormData();
+    formData.append('file', docFile);
+    formData.append('requestingEmail', user.email);
+    formData.append('userId', foundUser.id);
+    formData.append('documentKey', docKey);
+    formData.append('language', docLang);
+    formData.append('title', docTitle);
+    formData.append('fileName', docFile.name);
 
-      const { error: uploadError } = await supabase.storage
-        .from('documents')
-        .upload(fileName, docFile, { upsert: true });
+    const res = await fetch('/api/upload-document', {
+      method: 'POST',
+      body: formData,
+    });
 
-      if (uploadError) throw uploadError;
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
 
-      // Insert record into purchase_documents
-      const { error: dbError } = await supabase
-        .from('purchase_documents')
-        .upsert({
-          user_id: foundUser.id,
-          document_key: docKey,
-          language: docLang,
-          title: docTitle,
-          storage_path: fileName,
-          purchased_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,document_key,language' });
-
-      if (dbError) throw dbError;
-
-      setMsg(`Document uploaded for ${foundUser.email} ✅`);
-      setDocFile(null);
-      setDocTitle('');
-      if (fileRef.current) fileRef.current.value = '';
-    } catch (err) { setMsg('Error: ' + err.message); }
-    finally { setUploading(false); }
-  };
+    setMsg(`Document uploaded for ${foundUser.email} ✅`);
+    setDocFile(null);
+    setDocTitle('');
+    setDocKey('custom');
+    if (fileRef.current) fileRef.current.value = '';
+  } catch (err) {
+    setMsg('Error: ' + err.message);
+  } finally {
+    setUploading(false);
+  }
+};
 
   // ── Render ────────────────────────────────────────────────
 

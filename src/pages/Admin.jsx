@@ -168,21 +168,27 @@ export default function Admin() {
     setUserSearching(true);
     setFoundUser(null);
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, email, full_name, tier')
-        .eq('email', userEmail.trim().toLowerCase())
-        .maybeSingle();
-        console.log('Search result:', data, error);
-        if (!data) {
-          setMsg('Error: User not found — check console');
-        } else {
-          setFoundUser(data);
-        }
-    } catch (err) { setMsg('Error: ' + err.message); }
-    finally { setUserSearching(false); }
+      const res = await fetch('/api/search-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userEmail,
+          requestingEmail: user.email,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg('Error: ' + data.error);
+      } else {
+        setFoundUser(data.user);
+      }
+    } catch (err) {
+      setMsg('Error: ' + err.message);
+    } finally {
+      setUserSearching(false);
+    }
   };
-
+  
   const uploadDocument = async () => {
     if (!foundUser) { setMsg('Error: Find a user first'); return; }
     if (!docFile) { setMsg('Error: Select a file first'); return; }

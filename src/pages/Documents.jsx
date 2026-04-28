@@ -22,12 +22,37 @@ function groupDocuments(docs) {
 const LANG_LABELS = { en: '🇬🇧 English', no: '🇳🇴 Norwegian', es: '🇦🇷 Spanish' };
 
 export default function Documents() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState({});
 
-  git push
+  useEffect(() => {
+    if (authLoading || !user?.id) return;
+    let mounted = true;
+    
+    const run = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('purchase_documents')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('purchased_at', { ascending: false });
+        if (mounted) {
+          if (error) console.error('Error:', error);
+          setDocuments(groupDocuments(data || []));
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+  
+    run();
+    return () => { mounted = false; };
+  }, [user?.id, authLoading]);
 
   if (!user && !loading) {
     return (

@@ -22,41 +22,30 @@ function groupDocuments(docs) {
 const LANG_LABELS = { en: '🇬🇧 English', no: '🇳🇴 Norwegian', es: '🇦🇷 Spanish' };
 
 export default function Documents() {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState({});
 
   useEffect(() => {
-    if (authLoading) return;
     if (!user?.id) return;
-  
-    const timer = setTimeout(() => {
-      let mounted = true;
-      const run = async () => {
-        setLoading(true);
-        try {
-          const { data, error } = await supabase
-            .from('purchase_documents')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('purchased_at', { ascending: false });
-          if (mounted) {
-            if (error) console.error('Error:', error);
-            setDocuments(groupDocuments(data || []));
-          }
-        } catch (err) {
-          console.error('Unexpected error:', err);
-        } finally {
-          if (mounted) setLoading(false);
-        }
-      };
-      run();
-      return () => { mounted = false; };
-    }, 500);
-  
-    return () => clearTimeout(timer);
-  }, [user?.id, authLoading]);
+    
+    setLoading(true);
+    fetch('/api/get-documents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        setDocuments(groupDocuments(data.documents || []));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        setLoading(false);
+      });
+  }, [user?.id]);
 
   if (!user && !loading) {
     return (

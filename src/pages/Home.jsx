@@ -190,26 +190,13 @@ export default function Home() {
     e.preventDefault();
     setEmailError('');
     try {
-      await supabase.from('email_subscribers').insert({
-        email, language: lang.toLowerCase(), source: 'homepage',
-        subscribed_at: new Date().toISOString(), status: 'active',
-      });
-      setEmailSubmitted(true);
-      fetch('/api/send-email', {
+      await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, language: lang.toLowerCase() }),
       });
+      setEmailSubmitted(true);
     } catch (err) {
-      if (err?.code === '23505' || err?.message?.includes('duplicate')) {
-        setEmailSubmitted(true);
-        fetch('/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, language: lang.toLowerCase() }),
-        });
-        return;
-      }
       setEmailError(s.emailError);
     }
   };

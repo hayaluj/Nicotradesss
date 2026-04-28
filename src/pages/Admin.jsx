@@ -202,7 +202,13 @@ export default function Admin() {
   const deleteUserDoc = async (docId) => {
     if (!confirm('Delete this document?')) return;
     try {
-      await supabase.from('purchase_documents').delete().eq('id', docId);
+      const res = await fetch('/api/delete-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docId, requestingEmail: user.email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
       setMsg('Document deleted ✅');
       fetchUserDocs(foundUser.id);
     } catch (err) {

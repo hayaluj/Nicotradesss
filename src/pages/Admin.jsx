@@ -25,12 +25,12 @@ export default function Admin() {
   const [userEmail, setUserEmail] = useState('');
   const [foundUser, setFoundUser] = useState(null);
   const [userSearching, setUserSearching] = useState(false);
+  const [userDocs, setUserDocs] = useState([]);
   const [docTitle, setDocTitle] = useState('');
   const [docKey, setDocKey] = useState('custom');
   const [docLang, setDocLang] = useState('en');
   const [docFile, setDocFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [userDocs, setUserDocs] = useState([]);
   const fileRef = useRef(null);
 
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -162,20 +162,18 @@ export default function Admin() {
     fetchSignals();
   };
 
-  // ── Document Upload ───────────────────────────────────────
+  // ── Documents ─────────────────────────────────────────────
 
   const searchUser = async () => {
     if (!userEmail.trim()) return;
     setUserSearching(true);
     setFoundUser(null);
+    setUserDocs([]);
     try {
       const res = await fetch('/api/search-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: userEmail,
-          requestingEmail: user.email,
-        }),
+        body: JSON.stringify({ email: userEmail, requestingEmail: user.email }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -190,6 +188,7 @@ export default function Admin() {
       setUserSearching(false);
     }
   };
+
   const fetchUserDocs = async (userId) => {
     const res = await fetch('/api/get-documents', {
       method: 'POST',
@@ -199,15 +198,10 @@ export default function Admin() {
     const data = await res.json();
     setUserDocs(data.documents || []);
   };
-  
+
   const deleteUserDoc = async (docId) => {
     if (!confirm('Delete this document?')) return;
     try {
-      const res = await fetch('/api/search-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ requestingEmail: user.email, email: foundUser.email }),
-      });
       await supabase.from('purchase_documents').delete().eq('id', docId);
       setMsg('Document deleted ✅');
       fetchUserDocs(foundUser.id);
@@ -215,42 +209,44 @@ export default function Admin() {
       setMsg('Error: ' + err.message);
     }
   };
+
   const uploadDocument = async () => {
-  if (!foundUser) { setMsg('Error: Find a user first'); return; }
-  if (!docFile) { setMsg('Error: Select a file first'); return; }
-  if (!docTitle.trim()) { setMsg('Error: Enter a document title'); return; }
-  if (!docKey.trim()) { setMsg('Error: Enter a document key'); return; }
+    if (!foundUser) { setMsg('Error: Find a user first'); return; }
+    if (!docFile) { setMsg('Error: Select a file first'); return; }
+    if (!docTitle.trim()) { setMsg('Error: Enter a document title'); return; }
+    if (!docKey.trim()) { setMsg('Error: Enter a document key'); return; }
 
-  setUploading(true);
-  try {
-    const formData = new FormData();
-    formData.append('file', docFile);
-    formData.append('requestingEmail', user.email);
-    formData.append('userId', foundUser.id);
-    formData.append('documentKey', docKey);
-    formData.append('language', docLang);
-    formData.append('title', docTitle);
-    formData.append('fileName', docFile.name);
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', docFile);
+      formData.append('requestingEmail', user.email);
+      formData.append('userId', foundUser.id);
+      formData.append('documentKey', docKey);
+      formData.append('language', docLang);
+      formData.append('title', docTitle);
+      formData.append('fileName', docFile.name);
 
-    const res = await fetch('/api/upload-document', {
-      method: 'POST',
-      body: formData,
-    });
+      const res = await fetch('/api/upload-document', {
+        method: 'POST',
+        body: formData,
+      });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
 
-    setMsg(`Document uploaded for ${foundUser.email} ✅`);
-    setDocFile(null);
-    setDocTitle('');
-    setDocKey('custom');
-    if (fileRef.current) fileRef.current.value = '';
-  } catch (err) {
-    setMsg('Error: ' + err.message);
-  } finally {
-    setUploading(false);
-  }
-};
+      setMsg(`Document uploaded for ${foundUser.email} ✅`);
+      setDocFile(null);
+      setDocTitle('');
+      setDocKey('custom');
+      if (fileRef.current) fileRef.current.value = '';
+      fetchUserDocs(foundUser.id);
+    } catch (err) {
+      setMsg('Error: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   // ── Render ────────────────────────────────────────────────
 
@@ -364,12 +360,12 @@ export default function Admin() {
             <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>Post New Signal</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Pair</label>
+                <label style={labelStyle}>Pair</label>
                 <input placeholder="EUR/USD" value={newSignal.pair}
                   onChange={e => setNewSignal(p => ({ ...p, pair: e.target.value }))} style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Direction</label>
+                <label style={labelStyle}>Direction</label>
                 <select value={newSignal.direction}
                   onChange={e => setNewSignal(p => ({ ...p, direction: e.target.value }))} style={selectStyle}>
                   <option value="BUY">BUY</option>
@@ -377,22 +373,22 @@ export default function Admin() {
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Entry Price</label>
+                <label style={labelStyle}>Entry Price</label>
                 <input placeholder="1.0850" type="number" step="0.0001" value={newSignal.entry}
                   onChange={e => setNewSignal(p => ({ ...p, entry: e.target.value }))} style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Stop Loss</label>
+                <label style={labelStyle}>Stop Loss</label>
                 <input placeholder="1.0800" type="number" step="0.0001" value={newSignal.stop_loss}
                   onChange={e => setNewSignal(p => ({ ...p, stop_loss: e.target.value }))} style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Take Profit</label>
+                <label style={labelStyle}>Take Profit</label>
                 <input placeholder="1.0950" type="number" step="0.0001" value={newSignal.take_profit}
                   onChange={e => setNewSignal(p => ({ ...p, take_profit: e.target.value }))} style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Status</label>
+                <label style={labelStyle}>Status</label>
                 <select value={newSignal.status}
                   onChange={e => setNewSignal(p => ({ ...p, status: e.target.value }))} style={selectStyle}>
                   <option value="active">Active</option>
@@ -402,7 +398,7 @@ export default function Admin() {
               </div>
             </div>
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Notes (optional)</label>
+              <label style={labelStyle}>Notes (optional)</label>
               <textarea placeholder="Analysis, reasoning, context..." value={newSignal.notes}
                 onChange={e => setNewSignal(p => ({ ...p, notes: e.target.value }))}
                 rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
@@ -445,7 +441,8 @@ export default function Admin() {
       {/* DOCUMENTS TAB */}
       {tab === 'documents' && (
         <div>
-          <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24, marginBottom: 24 }}>
+          {/* Find User */}
+          <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24, marginBottom: 16 }}>
             <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>Find User</h3>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
               <input
@@ -459,9 +456,8 @@ export default function Admin() {
                 {userSearching ? 'Searching...' : 'Find User'}
               </button>
             </div>
-
             {foundUser && (
-              <div style={{ background: '#e6f4ef', borderRadius: 8, padding: '12px 16px', marginBottom: 20 }}>
+              <div style={{ background: '#e6f4ef', borderRadius: 8, padding: '12px 16px' }}>
                 <strong>{foundUser.email}</strong>
                 {foundUser.full_name && <span style={{ marginLeft: 8, color: '#6b6560' }}>{foundUser.full_name}</span>}
                 <span style={{ marginLeft: 8, fontSize: '0.75rem', background: '#0a6e55', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{foundUser.tier || 'free'}</span>
@@ -470,73 +466,77 @@ export default function Admin() {
           </div>
 
           {foundUser && (
-            <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24 }}>
-              <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>Upload Document to {foundUser.email}</h3>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Document Title</label>
-                  <input placeholder="e.g. Personal Trade Analysis" value={docTitle}
-                    onChange={e => setDocTitle(e.target.value)} style={inputStyle} />
+            <>
+              {/* Upload Document */}
+              <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24, marginBottom: 16 }}>
+                <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>Upload Document to {foundUser.email}</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div>
+                    <label style={labelStyle}>Document Title</label>
+                    <input placeholder="e.g. Personal Trade Analysis" value={docTitle}
+                      onChange={e => setDocTitle(e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Document Key</label>
+                    <input placeholder="e.g. custom_analysis" value={docKey}
+                      onChange={e => setDocKey(e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Language</label>
+                    <select value={docLang} onChange={e => setDocLang(e.target.value)} style={selectStyle}>
+                      <option value="en">English</option>
+                      <option value="no">Norwegian</option>
+                      <option value="es">Spanish</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>File (PDF)</label>
+                    <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.xlsx,.png,.jpg"
+                      onChange={e => setDocFile(e.target.files[0])}
+                      style={{ ...inputStyle, padding: '8px' }} />
+                  </div>
                 </div>
-                <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Document Key</label>
-                  <input placeholder="e.g. custom_analysis" value={docKey}
-                    onChange={e => setDocKey(e.target.value)} style={inputStyle} />
-                </div>
-                <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>Language</label>
-                  <select value={docLang} onChange={e => setDocLang(e.target.value)} style={selectStyle}>
-                    <option value="en">English</option>
-                    <option value="no">Norwegian</option>
-                    <option value="es">Spanish</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 }}>File (PDF)</label>
-                  <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.xlsx,.png,.jpg"
-                    onChange={e => setDocFile(e.target.files[0])}
-                    style={{ ...inputStyle, padding: '8px' }} />
-                </div>
+                <button onClick={uploadDocument} disabled={uploading || !docFile || !docTitle}
+                  style={{ padding: '10px 24px', background: uploading ? '#ccc' : '#0a6e55', color: '#fff', border: 'none', borderRadius: 8, cursor: uploading ? 'not-allowed' : 'pointer', fontWeight: 600 }}>
+                  {uploading ? 'Uploading...' : 'Upload Document'}
+                </button>
+                {docFile && (
+                  <div style={{ marginTop: 12, fontSize: '0.85rem', color: '#6b6560' }}>
+                    Selected: {docFile.name} ({(docFile.size / 1024).toFixed(1)} KB)
+                  </div>
+                )}
               </div>
 
-              <button onClick={uploadDocument} disabled={uploading || !docFile || !docTitle}
-                style={{ padding: '10px 24px', background: uploading ? '#ccc' : '#0a6e55', color: '#fff', border: 'none', borderRadius: 8, cursor: uploading ? 'not-allowed' : 'pointer', fontWeight: 600 }}>
-                {uploading ? 'Uploading...' : 'Upload Document'}
-              </button>
-
-              {docFile && (
-                <div style={{ marginTop: 12, fontSize: '0.85rem', color: '#6b6560' }}>
-                  Selected: {docFile.name} ({(docFile.size / 1024).toFixed(1)} KB)
-                </div>
-              )}
-            </div>
+              {/* User's existing documents */}
+              <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24 }}>
+                <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>
+                  Documents for {foundUser.email} ({userDocs.length})
+                </h3>
+                {userDocs.length === 0 ? (
+                  <p style={{ color: '#6b6560' }}>No documents yet.</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {userDocs.map(doc => (
+                      <div key={doc.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f9f8f5', borderRadius: 8, border: '1px solid #e0dbd0' }}>
+                        <div>
+                          <div style={{ fontWeight: 500, fontSize: '0.9rem' }}>{doc.title}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#6b6560', fontFamily: 'JetBrains Mono, monospace' }}>
+                            {doc.document_key} · {doc.language} · {new Date(doc.purchased_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <button onClick={() => deleteUserDoc(doc.id)} style={{ ...btnSmall, color: '#c0392b' }}>
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </div>
       )}
     </div>
-    {userDocs.length > 0 && (
-      <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24, marginTop: 16 }}>
-        <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>
-          Existing Documents ({userDocs.length})
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {userDocs.map(doc => (
-            <div key={doc.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f9f8f5', borderRadius: 8, border: '1px solid #e0dbd0' }}>
-              <div>
-                <div style={{ fontWeight: 500, fontSize: '0.9rem' }}>{doc.title}</div>
-                <div style={{ fontSize: '0.75rem', color: '#6b6560', fontFamily: 'JetBrains Mono, monospace' }}>
-                  {doc.document_key} · {doc.language} · {new Date(doc.purchased_at).toLocaleDateString()}
-                </div>
-              </div>
-              <button onClick={() => deleteUserDoc(doc.id)} style={{ ...btnSmall, color: '#c0392b' }}>
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
   );
 }
 
@@ -551,6 +551,7 @@ const inputStyle = {
 };
 
 const selectStyle = { ...inputStyle, background: '#fff' };
+const labelStyle = { fontSize: '0.8rem', fontWeight: 600, color: '#6b6560', display: 'block', marginBottom: 4 };
 
 function CourseForm({ course, onSave, onCancel, saving }) {
   const [form, setForm] = useState(course);

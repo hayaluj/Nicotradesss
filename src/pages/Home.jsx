@@ -404,7 +404,7 @@ export default function Home() {
           <h2 className="fade-in">{s.emailH2}</h2>
           <p className="sub fade-in fade-in-d1">{s.emailSub}</p>
           {emailSubmitted ? (
-            <div className="email-success fade-in" style={{ textAlign: 'center' }}>
+           <div className="email-success fade-in visible" style={{ textAlign: 'center' }}>
               <p style={{ fontSize: '1.5rem', marginBottom: 8 }}>Sent to your email! 🎉</p>
               <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
                 You can also access it directly at{' '}

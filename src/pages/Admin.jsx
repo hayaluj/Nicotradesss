@@ -30,6 +30,7 @@ export default function Admin() {
   const [docLang, setDocLang] = useState('en');
   const [docFile, setDocFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [userDocs, setUserDocs] = useState([]);
   const fileRef = useRef(null);
 
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -181,6 +182,7 @@ export default function Admin() {
         setMsg('Error: ' + data.error);
       } else {
         setFoundUser(data.user);
+        fetchUserDocs(data.user.id);
       }
     } catch (err) {
       setMsg('Error: ' + err.message);
@@ -188,7 +190,31 @@ export default function Admin() {
       setUserSearching(false);
     }
   };
-
+  const fetchUserDocs = async (userId) => {
+    const res = await fetch('/api/get-documents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    });
+    const data = await res.json();
+    setUserDocs(data.documents || []);
+  };
+  
+  const deleteUserDoc = async (docId) => {
+    if (!confirm('Delete this document?')) return;
+    try {
+      const res = await fetch('/api/search-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestingEmail: user.email, email: foundUser.email }),
+      });
+      await supabase.from('purchase_documents').delete().eq('id', docId);
+      setMsg('Document deleted ✅');
+      fetchUserDocs(foundUser.id);
+    } catch (err) {
+      setMsg('Error: ' + err.message);
+    }
+  };
   const uploadDocument = async () => {
   if (!foundUser) { setMsg('Error: Find a user first'); return; }
   if (!docFile) { setMsg('Error: Select a file first'); return; }
@@ -489,6 +515,28 @@ export default function Admin() {
         </div>
       )}
     </div>
+    {userDocs.length > 0 && (
+      <div style={{ background: '#fff', border: '1px solid #e0dbd0', borderRadius: 12, padding: 24, marginTop: 16 }}>
+        <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', marginBottom: 16 }}>
+          Existing Documents ({userDocs.length})
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {userDocs.map(doc => (
+            <div key={doc.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#f9f8f5', borderRadius: 8, border: '1px solid #e0dbd0' }}>
+              <div>
+                <div style={{ fontWeight: 500, fontSize: '0.9rem' }}>{doc.title}</div>
+                <div style={{ fontSize: '0.75rem', color: '#6b6560', fontFamily: 'JetBrains Mono, monospace' }}>
+                  {doc.document_key} · {doc.language} · {new Date(doc.purchased_at).toLocaleDateString()}
+                </div>
+              </div>
+              <button onClick={() => deleteUserDoc(doc.id)} style={{ ...btnSmall, color: '#c0392b' }}>
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
   );
 }
 

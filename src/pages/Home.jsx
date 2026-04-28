@@ -201,7 +201,11 @@ export default function Home() {
         subscribed_at: new Date().toISOString(), status: 'active',
       });
       setEmailSubmitted(true);
-    } catch (err) {
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, language: lang.toLowerCase() }),
+      });    } catch (err) {
       if (err?.code === '23505' || err?.message?.includes('duplicate')) { setEmailSubmitted(true); return; }
       setEmailError(s.emailError);
     }

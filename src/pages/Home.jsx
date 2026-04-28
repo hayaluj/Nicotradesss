@@ -14,10 +14,10 @@ const SOCIAL_LINKS = {
 const t = {
   EN: {
     about: 'About', trading: 'Trading', community: 'Community', bookSession: 'Book a Session',
-    dashboard: 'Dashboard →', getFreeKit: 'Get Free Kit →', tradingLive: 'Trading Live',
+    dashboard: 'Dashboard →', tradingLive: 'Trading Live',
     h1a: 'Trader. Creator.', h1b: 'Teaching you how', h1c: 'to make', h1money: 'money', h1d: 'move.',
     heroSub: 'Half Norwegian, half Argentinian. I trade Forex, build an audience across three languages, and teach everything I know. No gatekeeping.',
-    getCourse: 'Get the Course →', freeKit: 'Free Forex Kit',
+    getCourse: 'Get the Course →',
     tiktokFollowers: 'TikTok Followers', snapFollowers: 'Snapchat Followers',
     students: 'Students Taught', languages: 'Languages',
     storyH2a: 'Not your typical', storyH2b: 'trading guru.',
@@ -25,9 +25,6 @@ const t = {
     storyP2: "I started trading Forex around 5 years ago. Made mistakes, learned fast, and eventually built a following across TikTok, Snapchat, and Instagram teaching others what I wish I'd known.",
     storyP3: "I don't gatekeep. Everything I know goes into my content, my courses, and my community. If you're ready to actually learn how money moves — you're in the right place.",
     whatIOffer: 'WHAT I OFFER', offerTitle: 'Everything you need to start trading.',
-    calcTitle: 'Free Forex Risk Calculator',
-    calcDesc: 'Know your exact position size before every trade. Free, instant, no signup required — then grab the full Starter Kit.',
-    openCalc: 'Open Calculator →', badgeFree: 'FREE',
     courseTitle: 'The Forex Foundation Course',
     courseDesc: "Step-by-step from zero to your first live trades. My complete beginner system — the same one I wish I had when I started.",
     badgePopular: 'MOST POPULAR',
@@ -47,10 +44,11 @@ const t = {
     beginnerPdfTitle: "Beginner's Complete Trading Guide",
     beginnerPdfDesc: 'Everything I wish I knew when I started. The complete foundation for new traders.',
     beginnerPdfBtn: 'Get the Guide →',
-    emailH2: 'Get the free Forex Starter Kit.',
-    emailSub: 'The fundamentals, the mistakes, the shortcuts — in one free download. No spam, ever.',
-    emailPlaceholder: 'your@email.com', sendKit: 'Send me the kit →',
-    checkInbox: 'Check your inbox! 🎉', emailError: 'Something went wrong. Please try again.',
+    emailH2: 'Get the free Forex Risk Calculator.',
+    emailSub: 'Enter your email and we\'ll send you the link instantly. No spam, ever.',
+    emailPlaceholder: 'your@email.com', sendKit: 'Send me the calculator →',
+    checkInbox: 'Sent to your email! 🎉',
+    emailError: 'Something went wrong. Please try again.',
     disclaimer: 'All content on this site is for educational purposes only and does not constitute financial advice. Trading involves significant risk of loss. Past results are not indicative of future performance.',
     copyright: '© 2025 Nicotradesss. All rights reserved.',
     goDashboard: 'Go to Dashboard →', login: 'Log In', register: 'Get Started →',
@@ -58,10 +56,10 @@ const t = {
   },
   NO: {
     about: 'Om', trading: 'Handel', community: 'Fellesskap', bookSession: 'Bestill en time',
-    dashboard: 'Dashboard →', getFreeKit: 'Få gratis sett →', tradingLive: 'Live-handel',
+    dashboard: 'Dashboard →', tradingLive: 'Live-handel',
     h1a: 'Handler. Skaper.', h1b: 'Lærer deg hvordan', h1c: 'du får', h1money: 'pengene', h1d: 'til å bevege seg.',
     heroSub: 'Halvt norsk, halvt argentinsk. Jeg handler med valuta, bygger opp et publikum på tre språk og deler alt jeg kan. Ingen begrensninger.',
-    getCourse: 'Meld deg på kurset →', freeKit: 'Gratis Forex-pakke',
+    getCourse: 'Meld deg på kurset →',
     tiktokFollowers: 'TikTok-følgere', snapFollowers: 'Følgere på Snapchat',
     students: 'Antall elever', languages: 'Språk',
     storyH2a: 'Ikke akkurat en', storyH2b: 'typisk handelsguru.',
@@ -69,9 +67,6 @@ const t = {
     storyP2: 'Jeg begynte å handle på valutamarkedet da jeg var i begynnelsen av tjueårene. Jeg gjorde feil, lærte raskt og fikk etter hvert en følgerskare på TikTok, Snapchat og Instagram, hvor jeg lærte andre det jeg selv skulle ønske jeg hadde visst.',
     storyP3: 'Jeg holder ikke noe tilbake. Alt jeg vet, deler jeg i innholdet mitt, kursene mine og fellesskapet mitt. Hvis du er klar til å lære hvordan penger beveger seg – er du på rett sted.',
     whatIOffer: 'HVA JEG TILBYR', offerTitle: 'Alt du trenger for å komme i gang med handel.',
-    calcTitle: 'Gratis risikokalkulator for valutahandel',
-    calcDesc: 'Sjekk den nøyaktige posisjonsstørrelsen før hver handel. Gratis, umiddelbart og uten påmelding – og hent deretter hele startpakken.',
-    openCalc: 'Åpne kalkulator →', badgeFree: 'GRATIS',
     courseTitle: 'Grunnkurs i valutahandel',
     courseDesc: 'Trinn for trinn fra null til dine første live-handler. Mitt komplette system for nybegynnere – det samme systemet jeg skulle ønske jeg hadde hatt da jeg startet.',
     badgePopular: 'MEST POPULÆRE',
@@ -91,10 +86,11 @@ const t = {
     beginnerPdfTitle: 'Komplett handelsguide for nybegynnere',
     beginnerPdfDesc: 'Alt jeg skulle ønske jeg visste da jeg startet. Det komplette grunnlaget for nye tradere.',
     beginnerPdfBtn: 'Hent guiden →',
-    emailH2: 'Få den gratis Forex-startpakken.',
-    emailSub: 'Grunnleggende kunnskap, vanlige feil, smarte tips – alt i én gratis nedlasting. Ingen spam, noensinne.',
-    emailPlaceholder: 'din@epost.no', sendKit: 'Send meg settet →',
-    checkInbox: 'Sjekk innboksen din! 🎉', emailError: 'Det oppstod en feil. Prøv på nytt.',
+    emailH2: 'Få den gratis Forex-risikokalkulatoren.',
+    emailSub: 'Skriv inn e-postadressen din, så sender vi deg lenken umiddelbart. Ingen spam, noensinne.',
+    emailPlaceholder: 'din@epost.no', sendKit: 'Send meg kalkulatoren →',
+    checkInbox: 'Sent to your email! 🎉',
+    emailError: 'Det oppstod en feil. Prøv på nytt.',
     disclaimer: 'Alt innhold på dette nettstedet er kun ment for informasjonsformål og utgjør ikke finansiell rådgivning. Handel innebærer en betydelig risiko for tap. Tidligere resultater er ikke en garanti for fremtidig avkastning.',
     copyright: '© 2025 Nicotradesss. Alle rettigheter forbeholdt.',
     goDashboard: 'Gå til oversikten →', login: 'Logg inn', register: 'Kom i gang →',
@@ -102,10 +98,10 @@ const t = {
   },
   ES: {
     about: 'Acerca de', trading: 'Operaciones', community: 'Comunidad', bookSession: 'Reserva una sesión',
-    dashboard: 'Panel de control →', getFreeKit: 'Consigue tu kit gratis →', tradingLive: 'Operaciones en vivo',
+    dashboard: 'Panel de control →', tradingLive: 'Operaciones en vivo',
     h1a: 'Operador. Creador.', h1b: 'Te enseño cómo hacer', h1c: 'que el', h1money: 'dinero', h1d: 'se mueva.',
     heroSub: 'Mitad noruego, mitad argentino. Opero en el mercado de divisas, construyo una comunidad en tres idiomas y enseño todo lo que sé. Sin exclusividades.',
-    getCourse: 'Consigue el curso →', freeKit: 'Kit gratuito de Forex',
+    getCourse: 'Consigue el curso →',
     tiktokFollowers: 'Seguidores en TikTok', snapFollowers: 'Seguidores en Snapchat',
     students: 'Alumnos formados', languages: 'Idiomas',
     storyH2a: 'No es el típico', storyH2b: 'gurú del trading.',
@@ -113,9 +109,6 @@ const t = {
     storyP2: 'Empecé a operar en el mercado de divisas cuando tenía poco más de veinte años. Cometí errores, aprendí rápido y, con el tiempo, conseguí crear una comunidad de seguidores en TikTok, Snapchat e Instagram, donde enseño a otros lo que me hubiera gustado saber.',
     storyP3: 'No me guardo nada para mí. Todo lo que sé lo plasmo en mis contenidos, mis cursos y mi comunidad. Si estás listo para aprender de verdad cómo funciona el dinero, estás en el lugar adecuado.',
     whatIOffer: 'QUÉ OFREZCO', offerTitle: 'Todo lo que necesitas para empezar a operar.',
-    calcTitle: 'Calculadora gratuita de riesgo en Forex',
-    calcDesc: 'Conoce el tamaño exacto de tu posición antes de cada operación. Gratis, al instante y sin necesidad de registrarte.',
-    openCalc: 'Abrir calculadora →', badgeFree: 'GRATIS',
     courseTitle: 'Curso básico de Forex',
     courseDesc: 'Paso a paso, desde cero hasta tus primeras operaciones reales. Mi sistema para principiantes: el mismo que me hubiera gustado tener cuando empecé.',
     badgePopular: 'LOS MÁS POPULARES',
@@ -135,10 +128,11 @@ const t = {
     beginnerPdfTitle: 'Guía completa de trading para principiantes',
     beginnerPdfDesc: 'Todo lo que desearía haber sabido cuando empecé. La base completa para nuevos traders.',
     beginnerPdfBtn: 'Obtener la guía →',
-    emailH2: 'Consigue el kit de inicio gratuito de Forex.',
-    emailSub: 'Los conceptos básicos, los errores, los atajos: todo en una sola descarga gratuita. Sin spam, nunca.',
-    emailPlaceholder: 'tu@email.com', sendKit: 'Envíame el kit →',
-    checkInbox: '¡Echa un vistazo a tu bandeja de entrada! 🎉', emailError: 'Ha ocurrido un error. Inténtalo de nuevo.',
+    emailH2: 'Obtén la calculadora gratuita de riesgo en Forex.',
+    emailSub: 'Introduce tu email y te enviaremos el enlace al instante. Sin spam, nunca.',
+    emailPlaceholder: 'tu@email.com', sendKit: 'Envíame la calculadora →',
+    checkInbox: 'Sent to your email! 🎉',
+    emailError: 'Ha ocurrido un error. Inténtalo de nuevo.',
     disclaimer: 'Todo el contenido de este sitio web tiene fines exclusivamente educativos y no constituye asesoramiento financiero. Las operaciones bursátiles conllevan un riesgo significativo de pérdidas. Los resultados pasados no son indicativos del rendimiento futuro.',
     copyright: '© 2025 Nicotradesss. Todos los derechos reservados.',
     goDashboard: 'Ve al panel de control →', login: 'Iniciar sesión', register: 'Comenzar →',
@@ -205,8 +199,17 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, language: lang.toLowerCase() }),
-      });    } catch (err) {
-      if (err?.code === '23505' || err?.message?.includes('duplicate')) { setEmailSubmitted(true); return; }
+      });
+    } catch (err) {
+      if (err?.code === '23505' || err?.message?.includes('duplicate')) {
+        setEmailSubmitted(true);
+        fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, language: lang.toLowerCase() }),
+        });
+        return;
+      }
       setEmailError(s.emailError);
     }
   };
@@ -260,7 +263,6 @@ export default function Home() {
               ) : (
                 <button className="mk-btn mk-btn-primary" onClick={() => handleCheckout('course')}>{s.getCourse}</button>
               )}
-              <Link to="/calculator" className="mk-btn mk-btn-ghost">{s.freeKit}</Link>
             </div>
             <div className="hero-chips fade-in fade-in-d3">
               <a href={SOCIAL_LINKS.tiktok} target="_blank" rel="noopener noreferrer" className="chip chip-link">2K TikTok</a>
@@ -345,12 +347,6 @@ export default function Home() {
           <span className="section-label fade-in">{s.whatIOffer}</span>
           <h2 className="section-title fade-in fade-in-d1">{s.offerTitle}</h2>
           <div className="products-grid">
-            <div className="product-card gold-border fade-in">
-              <span className="product-badge badge-free">{s.badgeFree}</span>
-              <h3>{s.calcTitle}</h3>
-              <p>{s.calcDesc}</p>
-              <Link to="/calculator" className="mk-btn mk-btn-gold">{s.openCalc}</Link>
-            </div>
             <div className="product-card featured fade-in fade-in-d1">
               <span className="product-badge badge-popular">{s.badgePopular}</span>
               <h3>{s.courseTitle}</h3>
@@ -421,7 +417,15 @@ export default function Home() {
           <h2 className="fade-in">{s.emailH2}</h2>
           <p className="sub fade-in fade-in-d1">{s.emailSub}</p>
           {emailSubmitted ? (
-            <p className="email-success fade-in">{s.checkInbox}</p>
+            <div className="email-success fade-in" style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: '1.5rem', marginBottom: 8 }}>Sent to your email! 🎉</p>
+              <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                You can also access it directly at{' '}
+                <a href="https://nicotradesss.com/calculator" style={{ color: 'inherit', textDecoration: 'underline' }}>
+                  nicotradesss.com/calculator
+                </a>
+              </p>
+            </div>
           ) : (
             <form className="email-form fade-in fade-in-d2" onSubmit={handleEmailSubmit}>
               <input type="email" placeholder={s.emailPlaceholder} required value={email} onChange={(e) => setEmail(e.target.value)} />

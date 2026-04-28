@@ -28,30 +28,34 @@ export default function Documents() {
   const [downloading, setDownloading] = useState({});
 
   useEffect(() => {
-    if (authLoading || !user?.id) return;
-    let mounted = true;
-    
-    const run = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('purchase_documents')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('purchased_at', { ascending: false });
-        if (mounted) {
-          if (error) console.error('Error:', error);
-          setDocuments(groupDocuments(data || []));
-        }
-      } catch (err) {
-        console.error('Unexpected error:', err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
+    if (authLoading) return;
+    if (!user?.id) return;
   
-    run();
-    return () => { mounted = false; };
+    const timer = setTimeout(() => {
+      let mounted = true;
+      const run = async () => {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from('purchase_documents')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('purchased_at', { ascending: false });
+          if (mounted) {
+            if (error) console.error('Error:', error);
+            setDocuments(groupDocuments(data || []));
+          }
+        } catch (err) {
+          console.error('Unexpected error:', err);
+        } finally {
+          if (mounted) setLoading(false);
+        }
+      };
+      run();
+      return () => { mounted = false; };
+    }, 500);
+  
+    return () => clearTimeout(timer);
   }, [user?.id, authLoading]);
 
   if (!user && !loading) {

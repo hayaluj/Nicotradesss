@@ -406,12 +406,7 @@ export default function Home() {
           {emailSubmitted ? (
            <div className="email-success fade-in visible" style={{ textAlign: 'center' }}>
               <p style={{ fontSize: '1.5rem', marginBottom: 8 }}>Sent to your email! 🎉</p>
-              <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-                You can also access it directly at{' '}
-                <a href="https://nicotradesss.com/calculator" style={{ color: 'inherit', textDecoration: 'underline' }}>
-                  nicotradesss.com/calculator
-                </a>
-              </p>
+
             </div>
           ) : (
             <form className="email-form fade-in fade-in-d2" onSubmit={handleEmailSubmit}>

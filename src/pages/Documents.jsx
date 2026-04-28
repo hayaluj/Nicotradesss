@@ -24,7 +24,7 @@ const LANG_LABELS = { en: '🇬🇧 English', no: '🇳🇴 Norwegian', es: '�
 export default function Documents() {
   const { user } = useAuth();
   const [documents, setDocuments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState({});
 
   useEffect(() => {

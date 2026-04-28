@@ -27,26 +27,7 @@ export default function Documents() {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState({});
 
-  useEffect(() => {
-    if (!user) return;
-    const run = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('purchase_documents')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('purchased_at', { ascending: false });
-          if (error) console.error('Error:', error);
-          setDocuments(groupDocuments(data || []));
-          setLoading(false);
-      } catch (err) {
-          console.error('Unexpected error:', err);
-          setLoading(false);
-        }
-    };
-    run();
-  }, [user?.id]);
+  git push
 
   if (!user && !loading) {
     return (

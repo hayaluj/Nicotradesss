@@ -290,7 +290,7 @@ export default function Dashboard() {
         </span>
         <div className="dash-topbar-stats">
           {currentTier === 'vip' && (
-            
+            <a
               href='https://billing.stripe.com/p/login/00wdR9gD6fyofSa6Kt3ks00'
               target='_blank'
               rel='noreferrer'

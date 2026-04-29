@@ -26,9 +26,25 @@ function getGreeting(s) {
 }
 
 export default function Dashboard() {
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setPaymentSuccess(true);
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, []);
   const { user, profile } = useAuth();
   const { lang } = useLang();
   const s = dashboardT[lang];
+  if (paymentSuccess) return (
+    <div style={{padding:'2rem',textAlign:'center'}}>
+      <h2>You're in.</h2>
+      <p>Payment confirmed. Your VIP Telegram invite will be sent to your email within a few hours.</p>
+      <p>In the meantime, join the free community: <a href='https://t.me/nicotradesss'>t.me/nicotradesss</a></p>
+      <button onClick={() => setPaymentSuccess(false)}>Go to dashboard</button>
+    </div>
+  );
   const [stats, setStats] = useState({ lessonsCompleted: 0, coursesEnrolled: 0 });
   const [displayStats, setDisplayStats] = useState({ lessonsCompleted: 0, coursesEnrolled: 0 });
   const [latestSignal, setLatestSignal] = useState(null);

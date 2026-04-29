@@ -142,6 +142,7 @@ const t = {
 
 export default function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [lang, setLang] = useState('EN');
   const [email, setEmail] = useState('');
   const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -173,6 +174,7 @@ export default function Home() {
   }, []);
 
   const handleCheckout = async (product) => {
+    if (!user) { navigate("/login"); return; }
     try {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',

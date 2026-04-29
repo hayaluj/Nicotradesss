@@ -16,6 +16,7 @@ import Legal from '@/pages/Legal';
 import Admin from '@/pages/Admin';
 import Documents from '@/pages/Documents';
 import ResetPassword from '@/pages/ResetPassword';
+import Success from '@/pages/Success';
 import Checkout from '@/pages/Checkout';
 
 function ProtectedRoute({ children }) {
@@ -37,6 +38,7 @@ function AppRoutes() {
       <Route path="/privacy-policy" element={<Legal initialTab="privacy" />} />
       <Route path="/terms-of-service" element={<Legal initialTab="terms" />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/success" element={<Success />} />
       <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
 
       {/* Protected routes with Layout */}

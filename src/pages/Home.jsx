@@ -174,7 +174,7 @@ export default function Home() {
   }, []);
 
   const handleCheckout = async (product) => {
-    if (!user) { navigate("/login"); return; }
+    if (!user) { navigate("/login?redirect=/dashboard?payment=success"); return; }
     try {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',

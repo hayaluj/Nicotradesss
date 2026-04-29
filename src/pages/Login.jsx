@@ -24,11 +24,11 @@ export default function Login({ initialTab = 'login' }) {
     try {
       if (activeTab === 'login') {
         await signIn(email, password);
-        navigate('/dashboard');
+        const redirectTo = new URLSearchParams(window.location.search).get('redirect'); navigate(redirectTo || '/dashboard');
       } else {
         if (!fullName.trim()) { setError('Please enter your full name.'); setLoading(false); return; }
         const data = await signUp(email, password, fullName);
-        if (data.session) { navigate('/dashboard'); } else { setConfirmEmail(true); }
+        if (data.session) { const redirectTo = new URLSearchParams(window.location.search).get('redirect'); navigate(redirectTo || '/dashboard'); } else { setConfirmEmail(true); }
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');

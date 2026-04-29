@@ -14,7 +14,7 @@ export default function Checkout() {
     fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product, userId: user.id, email: user.email }),
+      body: JSON.stringify({ product, userId: user.id, email: user.email, successUrl: "https://nicotradesss.com/success", cancelUrl: "https://nicotradesss.com/" }),
     })
       .then(r => r.json())
       .then(data => { if (data.url) window.location.href = data.url; })

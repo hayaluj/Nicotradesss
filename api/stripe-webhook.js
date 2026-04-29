@@ -124,7 +124,7 @@ export default async function handler(req, res) {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                chat_id: -3738710199,
+                chat_id: -1003738710199,
                 member_limit: 1,
                 creates_join_request: false,
               }),

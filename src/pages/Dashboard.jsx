@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/contexts/LangContext';
@@ -27,13 +27,13 @@ function getGreeting(s) {
 
 export default function Dashboard() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
+    if (searchParams.get("payment") === "success") {
       setPaymentSuccess(true);
-      window.history.replaceState({}, '', '/dashboard');
+      setSearchParams({});
     }
-  }, []);
+  }, [searchParams]);
   const { user, profile } = useAuth();
   const { lang } = useLang();
   const s = dashboardT[lang];

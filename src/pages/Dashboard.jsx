@@ -34,6 +34,19 @@ export default function Dashboard() {
       setSearchParams({});
     }
   }, [searchParams]);
+  useEffect(() => {
+    const product = searchParams.get("checkout");
+    if (product && user) {
+      setSearchParams({});
+      fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product, userId: user.id, email: user.email }),
+      }).then(r => r.json()).then(data => {
+        if (data.url) window.location.href = data.url;
+      });
+    }
+  }, [user, searchParams]);
   const { user, profile } = useAuth();
   const { lang } = useLang();
   const s = dashboardT[lang];

@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Checkout() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (!user) return;
-    const product = sessionStorage.getItem('pendingProduct');
+    const product = searchParams.get('product');
     if (!product) { navigate('/dashboard'); return; }
-    sessionStorage.removeItem('pendingProduct');
     fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

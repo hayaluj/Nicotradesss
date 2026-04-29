@@ -34,6 +34,7 @@ export default function Dashboard() {
       setSearchParams({});
     }
   }, [searchParams]);
+  const { user, profile } = useAuth();
   useEffect(() => {
     const product = searchParams.get("checkout");
     if (product && user) {
@@ -47,7 +48,6 @@ export default function Dashboard() {
       });
     }
   }, [user, searchParams]);
-  const { user, profile } = useAuth();
   const { lang } = useLang();
   const s = dashboardT[lang];
   if (paymentSuccess) return (

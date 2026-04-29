@@ -62,7 +62,7 @@ const t = {
     getCourse: 'Meld deg på kurset →',
     tiktokFollowers: 'TikTok-følgere', snapFollowers: 'Følgere på Snapchat',
     students: 'Antall elever', languages: 'Språk',
-    storyH2a: 'Ikke akkurat en', storyH2b: 'typisk handelsguru.',
+    storyH2a: 'Ikke akkurat en', storyH2b: 'typisk trading guru.',
     storyP1: 'Jeg heter Nico. Jeg er halvt norsk, halvt argentinsk – og vokste opp mellom to kulturer, to språk og to helt forskjellige syn på penger.',
     storyP2: 'Jeg begynte å handle på Forex for rundt 5 år siden. Jeg gjorde feil, lærte raskt og fikk etter hvert en følgerskare på TikTok, Snapchat og Instagram, hvor jeg lærte andre det jeg selv skulle ønske jeg hadde visst.',
     storyP3: 'Jeg holder ikke noe tilbake. Alt jeg vet, deler jeg i innholdet mitt, kursene mine og fellesskapet mitt. Hvis du er klar til å lære hvordan penger beveger seg – er du på rett sted.',

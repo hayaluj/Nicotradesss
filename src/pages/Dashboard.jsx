@@ -289,6 +289,16 @@ export default function Dashboard() {
           {getGreeting(s)}, {profile?.full_name || 'Trader'}
         </span>
         <div className="dash-topbar-stats">
+          {currentTier === 'vip' && (
+            
+              href='https://billing.stripe.com/p/login/00wdR9gD6fyofSa6Kt3ks00'
+              target='_blank'
+              rel='noreferrer'
+              style={{fontSize:'0.75rem',color:'#0074d4',textDecoration:'underline',marginRight:'8px'}}
+            >
+              Manage subscription
+            </a>
+          )}
           <span className={`dash-stat-chip tier-${currentTier}`}>
             <span className="chip-label">Tier:</span>
             <span className="chip-value">{currentTier.toUpperCase()}</span>

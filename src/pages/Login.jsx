@@ -41,7 +41,7 @@ export default function Login({ initialTab = 'login' }) {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/dashboard' }
+      options: { redirectTo: window.location.origin + (new URLSearchParams(window.location.search).get('redirect') ? decodeURIComponent(new URLSearchParams(window.location.search).get('redirect')) : '/dashboard') }
     });
   };
 

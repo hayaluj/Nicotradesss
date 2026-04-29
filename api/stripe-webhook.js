@@ -117,21 +117,51 @@ export default async function handler(req, res) {
           }
         }
 
-        // Notify admins of VIP purchase
+        // Notify admins and send Telegram invite for VIP purchase
         if (product === 'vip' && email) {
-          await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              from: 'nico@nicotradesss.com',
-              to: ['hayaluj@gmail.com', 'nico@nicotradesss.com'],
-              subject: 'New VIP member — send Telegram invite',
-              html: `<h2>New VIP subscriber</h2><p><strong>Email:</strong> ${email}</p><p>Send them the VIP Telegram invite link now.</p>`,
-            }),
-          }).catch(err => console.error('Resend error:', err));
+          try {
+            const inviteRes = await fetch(`https://api.telegram.org/bot8745221672:AAExU-IQ2xKMH3dpoaAT42MqXDO0NME7jZ4/createChatInviteLink`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: -3738710199,
+                member_limit: 1,
+                creates_join_request: false,
+              }),
+            });
+            const inviteData = await inviteRes.json();
+            const inviteLink = inviteData.result?.invite_link || 'Could not generate link — add manually';
+
+            await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                from: 'nico@nicotradesss.com',
+                to: [email],
+                subject: 'Welcome to Nicotradesss VIP',
+                html: `<h2>Welcome to VIP.</h2><p>Here is your personal Telegram invite link — it works once and expires after use:</p><p><a href=${inviteLink}>${inviteLink}</a></p><p>See you inside.</p>`,
+              }),
+            });
+
+            await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                from: 'nico@nicotradesss.com',
+                to: ['hayaluj@gmail.com', 'nico@nicotradesss.com'],
+                subject: 'New VIP member — ' + email,
+                html: `<h2>New VIP subscriber</h2><p><strong>Email:</strong> ${email}</p><p><strong>Invite link sent:</strong> ${inviteLink}</p>`,
+              }),
+            });
+          } catch (err) {
+            console.error('VIP invite error:', err);
+          }
         }
 
         // 3. Store payment record

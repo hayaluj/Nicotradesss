@@ -16,6 +16,7 @@ import Legal from '@/pages/Legal';
 import Admin from '@/pages/Admin';
 import Documents from '@/pages/Documents';
 import ResetPassword from '@/pages/ResetPassword';
+import Checkout from '@/pages/Checkout';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -36,6 +37,7 @@ function AppRoutes() {
       <Route path="/privacy-policy" element={<Legal initialTab="privacy" />} />
       <Route path="/terms-of-service" element={<Legal initialTab="terms" />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
 
       {/* Protected routes with Layout */}
       <Route

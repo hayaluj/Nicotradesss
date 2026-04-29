@@ -174,7 +174,7 @@ export default function Home() {
   }, []);
 
   const handleCheckout = async (product) => {
-    if (!user) { sessionStorage.setItem("pendingProduct", product); navigate("/login"); return; }
+    if (!user) { sessionStorage.setItem("pendingProduct", product); navigate("/checkout"); return; }
     try {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',

@@ -26,6 +26,7 @@ function getGreeting(s) {
 }
 
 export default function Dashboard() {
+  const { user, profile, loading } = useAuth();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
@@ -34,9 +35,9 @@ export default function Dashboard() {
       setSearchParams({});
     }
   }, [searchParams]);
-  const { user, profile } = useAuth();
   const { lang } = useLang();
   const s = dashboardT[lang];
+  if (loading) return <div className="loading-screen">Loading...</div>;
   if (paymentSuccess) return (
     <div style={{padding:'2rem',textAlign:'center'}}>
       <h2>You're in.</h2>
@@ -49,7 +50,7 @@ export default function Dashboard() {
   const [displayStats, setDisplayStats] = useState({ lessonsCompleted: 0, coursesEnrolled: 0 });
   const [latestSignal, setLatestSignal] = useState(null);
   const [msg, setMsg] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // Admin panel state
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -152,7 +153,7 @@ export default function Dashboard() {
     } catch (err) {
       console.error('Dashboard data error:', err);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 

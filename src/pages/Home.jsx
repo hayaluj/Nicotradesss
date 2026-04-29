@@ -372,7 +372,7 @@ export default function Home() {
               <span className="product-badge badge-premium">{s.badgePremium}</span>
               <h3>{s.sessionTitle}</h3>
               <p>{s.sessionDesc}</p>
-              <div className="product-price">€199/session</div>
+              <div className="product-price">€399/session</div>
               <Link to="/booking" className="mk-btn mk-btn-primary">{s.bookSession}</Link>
             </div>
           </div>

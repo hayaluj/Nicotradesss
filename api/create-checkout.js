@@ -1,7 +1,7 @@
 const PRICES = {
   course:        'price_1TH2G3GmYFXIEfvk4XmrWMGV',  // €99 one-time
   vip:           'price_1TH2GMGmYFXIEfvkdBvNE2a4',   // €29/month
-  session:       'price_1TH2GhGmYFXIEfvkuHo7ZAdC',   // €199 one-time
+  session:       'price_1TH2GhGmYFXIEfvkuHo7ZAdC',   // €399 one-time
   templates:     'price_1TH2H3GmYFXIEfvk9PD28dII',   // €19 one-time
   beginner_pdf:  'price_1TPm2xGmYFXIEfvkBq43BpwV',   // €29 one-time
   bot_pdf:       'price_1TPm4aGmYFXIEfvk0wWjYZz6',   // €14.99 one-time
